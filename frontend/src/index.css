@@ -1,0 +1,115 @@
+@import "tailwindcss";
+
+@keyframes bgStars {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 1000px 1000px;
+  }
+}
+
+.animate-bgStars {
+  background-image: radial-gradient(white 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: bgStars 100s linear infinite;
+}
+
+
+  @keyframes neonPulse {
+    0%, 100% {
+      box-shadow:
+        0 0 5px #fff,
+        0 0 10px #fff,
+        0 0 20px #fff,
+        0 0 40px #fff;
+    }
+    50% {
+      box-shadow:
+        0 0 2px #fff,
+        0 0 5px #fff,
+        0 0 10px #fff,
+        0 0 20px #fff;
+    }
+  }
+
+  .neon-border {
+    border: 2px solid white;
+    animation: neonPulse 2s infinite ease-in-out;
+    border-radius: 1rem;
+  }
+
+  /* Animación sencilla para inputs (efecto blanco) */
+  input {
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  input:hover, input:focus {
+    border-color: #ffffff;
+    box-shadow: 0 0 8px #ffffff;
+    outline: none;
+  }
+  
+  /* Estilos personalizados para la barra de desplazamiento */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, rgba(138, 43, 226, 0.7), rgba(123, 104, 238, 0.7));
+    border-radius: 10px;
+    transition: background 0.3s ease;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom, rgba(138, 43, 226, 0.9), rgba(123, 104, 238, 0.9));
+  }
+
+  /* Sistema de párrafos para contenedores de texto */
+  .text-container {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-all;
+    white-space: normal;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  /* Aplicar a mensajes de chat */
+  .message-content {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+    max-width: 250px;
+    overflow: hidden;
+    display: inline-block;
+  }
+
+  /* Aplicar a comentarios */
+  .comment-content {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-all;
+    white-space: normal;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  /* Aplicar a publicaciones */
+  .post-content {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-all;
+    white-space: normal;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  
