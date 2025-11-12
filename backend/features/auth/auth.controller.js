@@ -138,25 +138,26 @@ export const register = async (req, res) => {
     // Encriptar la contraseña
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Crear usuario pendiente
-    const newPendingUser = await PendingUser.create({
+    // Crear usuario directamente verificado (emails deshabilitados)
+    const newUser = new User({
       username,
       email,
       password: hashedPassword,
-      verificationToken
+      isVerified: true // Verificado directamente
     });
 
-    // Enviar correo de verificación
-    try {
-      await sendVerificationEmail(email, verificationToken);
-      res.status(200).json({
-        message: 'Se ha enviado un correo de verificación. Por favor, verifica tu correo para completar el registro.'
-      });
-    } catch (emailError) {
-      // Si falla el envío del correo, eliminamos el usuario pendiente
-      await PendingUser.findByIdAndDelete(newPendingUser._id);
-      throw new Error('Error al enviar el correo de verificación');
-    }
+    await newUser.save();
+
+    // Crear el perfil asociado
+    await Profile.create({
+      user: newUser._id,
+      username: newUser.username
+    });
+
+    res.status(200).json({
+      message: 'Registro completado. Ya puedes iniciar sesión.',
+      user: { id: newUser._id, username: newUser.username, email: newUser.email }
+    });
   } catch (error) {
     res.status(500).json({ message: 'Error al iniciar el registro', error: error.message });
   }
