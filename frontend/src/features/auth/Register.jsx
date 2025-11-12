@@ -39,8 +39,13 @@ const Register = () => {
         throw new Error(data.message || 'Error al registrar');
       }
 
-      setSuccess('Te hemos enviado un correo de verificación. Por favor, revisa tu bandeja de entrada.');
+      setSuccess('¡Usuario registrado exitosamente!');
       setFormData({ username: '', email: '', password: '' });
+      
+      // Redirigir al login después de 1.5 segundos
+      setTimeout(() => {
+        navigate('/login');
+      }, 1500);
     } catch (err) {
       setError(err.message);
     } finally {
