@@ -5,7 +5,7 @@ const useNotifications = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  // Obtener contador de notificaciones no leídas
+  // Obtener contador de notificaciones no leídass
   const fetchUnreadCount = useCallback(async () => {
     try {
       setLoading(true);
