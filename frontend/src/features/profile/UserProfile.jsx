@@ -281,7 +281,7 @@ const UserProfile = () => {
       </div>
 
       {/* Contenedor principal estilo Facebook */}
-      <div className="relative min-h-screen flex flex-col items-center justify-start pt-24 pb-24 z-10 bg-transparent mx-4 sm:mx-6 lg:ml-64 lg:mr-72">
+      <div className="relative min-h-screen flex flex-col items-center justify-start pt-24 pb-24 z-10 bg-transparent ml-64">
         <div className="w-full max-w-4xl mx-auto">
           {/* Portada */}
           <div className="relative h-96 rounded-t-2xl shadow-lg bg-transparent border-t-2 border-x-2 border-white">
