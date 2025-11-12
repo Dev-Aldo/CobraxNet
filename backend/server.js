@@ -23,9 +23,14 @@ const app = express();
 const httpServer = createServer(app);
 
 // Configurar Socket.io
+// Permitir orígenes configurables vía env FRONTEND_URL (coma-separados) o usar valores por defecto
+const allowedOrigins = process.env.FRONTEND_URL
+  ? process.env.FRONTEND_URL.split(',').map(s => s.trim())
+  : ["http://localhost:5173", "http://localhost:5174", "https://cobraxnet.netlify.app"];
+
 const io = new Server(httpServer, {
   cors: {
-    origin: ["http://localhost:5173", "http://localhost:5174"], // URLs del frontend
+    origin: allowedOrigins,
     methods: ["GET", "POST"]
   }
 });

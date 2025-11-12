@@ -88,7 +88,9 @@ const GroupChat = () => {
     const token = localStorage.getItem('token');
     if (!token || !groupId) return;
 
-    const newSocket = io('https://cobraxnet.onrender.com', {
+    const SOCKET_URL = import.meta.env.VITE_API_URL || 'https://cobraxnet.onrender.com';
+    const newSocket = io(SOCKET_URL, {
+      transports: ['websocket'],
       auth: { token },
       reconnectionAttempts: 5,
       reconnectionDelay: 1000
