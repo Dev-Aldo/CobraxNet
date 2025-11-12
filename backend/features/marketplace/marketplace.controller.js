@@ -7,7 +7,8 @@ export const createProduct = async (req, res) => {
 		const { title, description, price, category, contact } = req.body;
 		let images = [];
 		if (req.files && req.files.length > 0) {
-			images = req.files.map(file => `${req.protocol}://${req.get('host')}/uploads/${file.filename}`);
+			const baseUrl = process.env.API_URL || `${req.protocol}://${req.get('host')}`;
+			images = req.files.map(file => `${baseUrl}/uploads/${file.filename}`);
 		}
 		const product = new Product({
 			title,
@@ -83,7 +84,8 @@ export const updateProduct = async (req, res) => {
 
 		// Agregar nuevas imágenes
 		if (req.files && req.files.length > 0) {
-			const newImgs = req.files.map(file => `${req.protocol}://${req.get('host')}/uploads/${file.filename}`);
+			const baseUrl = process.env.API_URL || `${req.protocol}://${req.get('host')}`;
+			const newImgs = req.files.map(file => `${baseUrl}/uploads/${file.filename}`);
 			product.images = [...product.images, ...newImgs];
 		}
 

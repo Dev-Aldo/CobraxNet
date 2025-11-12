@@ -10,8 +10,9 @@ export const createPost = async (req, res) => {
     }
     let media = [];
     if (req.files && req.files.length > 0) {
+      const baseUrl = process.env.API_URL || `${req.protocol}://${req.get('host')}`;
       media = req.files.map(f => ({
-        url: `${req.protocol}://${req.get('host')}/uploads/${f.filename}`,
+        url: `${baseUrl}/uploads/${f.filename}`,
         type: f.mimetype.startsWith('image/') ? 'image' : f.mimetype.startsWith('video/') ? 'video' : 'file',
         name: f.originalname,
         mimetype: f.mimetype
@@ -117,8 +118,9 @@ export const updatePost = async (req, res) => {
     const { title = '', content } = req.body;
     let media = [];
     if (req.files && req.files.length > 0) {
+      const baseUrl = process.env.API_URL || `${req.protocol}://${req.get('host')}`;
       media = req.files.map(f => ({
-        url: `${req.protocol}://${req.get('host')}/uploads/${f.filename}`,
+        url: `${baseUrl}/uploads/${f.filename}`,
         type: f.mimetype.startsWith('image/') ? 'image' : f.mimetype.startsWith('video/') ? 'video' : 'file',
         name: f.originalname,
         mimetype: f.mimetype
@@ -184,7 +186,8 @@ export const addComment = async (req, res) => {
 
     let imageUrl = '';
     if (req.file) {
-      imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+      const baseUrl = process.env.API_URL || `${req.protocol}://${req.get('host')}`;
+      imageUrl = `${baseUrl}/uploads/${req.file.filename}`;
     }
 
     const post = await Post.findById(req.params.id);
