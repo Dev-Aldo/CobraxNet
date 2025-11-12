@@ -14,7 +14,7 @@ const UsersSidebar = () => {
         const token = localStorage.getItem('token');
         if (!token) return;
 
-        const response = await axios.get('http://localhost:3000/api/v1/profile/all', {
+        const response = await axios.get('https://cobraxnet.onrender.com/api/v1/profile/all', {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -32,7 +32,7 @@ const UsersSidebar = () => {
   const getImageUrl = (url) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return `http://localhost:3000${url}`;
+    return `https://cobraxnet.onrender.com${url}`;
   };
 
   // Filtrar perfiles según el término de búsqueda
@@ -99,7 +99,7 @@ const UsersSidebar = () => {
                         className="w-10 h-10 rounded-full object-cover border border-white/30"
                         onError={(e) => {
                           e.target.onerror = null;
-                          e.target.src = 'http://localhost:3000/uploads/default-avatar.svg';
+                          e.target.src = 'https://cobraxnet.onrender.com/uploads/default-avatar.svg';
                         }}
                       />
                     ) : (

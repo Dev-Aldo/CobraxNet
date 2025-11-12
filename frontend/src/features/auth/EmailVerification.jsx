@@ -34,7 +34,7 @@ const EmailVerification = () => {
       verifiedTokens.add(token);
 
       try {
-        const response = await axios.get(`http://localhost:3000/api/v1/users/verify/${token}`);
+        const response = await axios.get(`https://cobraxnet.onrender.com/api/v1/users/verify/${token}`);
         
         if (isMounted) {
           setStatus('success');

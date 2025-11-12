@@ -22,7 +22,7 @@ const Marketplace = () => {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:3000/api/v1/marketplace', {
+      const res = await axios.get('https://cobraxnet.onrender.com/api/v1/marketplace', {
         params: { category, search }
       });
       setProducts(res.data.products);
@@ -47,7 +47,7 @@ const Marketplace = () => {
           setUsersModalData(prev => ({ ...prev, loading: false }));
           return;
         }
-        const res = await axios.get('http://localhost:3000/api/v1/profile/all', {
+        const res = await axios.get('https://cobraxnet.onrender.com/api/v1/profile/all', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setUsersModalData({ profiles: res.data, loading: false, error: '' });
@@ -191,7 +191,7 @@ const Marketplace = () => {
                       return (profileData.username || '').toLowerCase().includes(q) || (profileData.carrera || '').toLowerCase().includes(q);
                     })
                     .map((profileData) => {
-                    const getImageUrl = (url) => url?.startsWith('http') ? url : `http://localhost:3000${url}`;
+                    const getImageUrl = (url) => url?.startsWith('http') ? url : `https://cobraxnet.onrender.com${url}`;
                     const token = localStorage.getItem('token');
                     let profileLink = `/profile/${profileData.user}`;
                     try {

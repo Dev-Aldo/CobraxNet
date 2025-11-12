@@ -53,7 +53,7 @@ const GroupChat = () => {
   const handleRemoveReaction = async (messageId, reaction) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.delete(`http://localhost:3000/api/v1/groups/${groupId}/messages/${messageId}/reactions/${encodeURIComponent(reaction)}`, {
+      const response = await axios.delete(`https://cobraxnet.onrender.com/api/v1/groups/${groupId}/messages/${messageId}/reactions/${encodeURIComponent(reaction)}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -88,7 +88,7 @@ const GroupChat = () => {
     const token = localStorage.getItem('token');
     if (!token || !groupId) return;
 
-    const newSocket = io('http://localhost:3000', {
+    const newSocket = io('https://cobraxnet.onrender.com', {
       auth: { token },
       reconnectionAttempts: 5,
       reconnectionDelay: 1000
@@ -124,13 +124,13 @@ const GroupChat = () => {
         }
 
         // Obtener información del grupo
-        const groupResponse = await axios.get(`http://localhost:3000/api/v1/groups/${groupId}`, {
+        const groupResponse = await axios.get(`https://cobraxnet.onrender.com/api/v1/groups/${groupId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setGroup(groupResponse.data.data);
 
         // Obtener mensajes del grupo
-        const messagesResponse = await axios.get(`http://localhost:3000/api/v1/groups/${groupId}/messages`, {
+        const messagesResponse = await axios.get(`https://cobraxnet.onrender.com/api/v1/groups/${groupId}/messages`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         
@@ -342,7 +342,7 @@ const GroupChat = () => {
 
       // Enviar el mensaje al servidor
       const response = await axios.post(
-        `http://localhost:3000/api/v1/groups/${groupId}/messages`, 
+        `https://cobraxnet.onrender.com/api/v1/groups/${groupId}/messages`, 
         formData,
         {
           headers: {
@@ -465,7 +465,7 @@ const GroupChat = () => {
       }
 
       const response = await axios.patch(
-        `http://localhost:3000/api/v1/groups/${groupId}/messages/${editingMessage._id}`,
+        `https://cobraxnet.onrender.com/api/v1/groups/${groupId}/messages/${editingMessage._id}`,
         formData,
         {
           headers: { 
@@ -530,7 +530,7 @@ const GroupChat = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:3000/api/v1/groups/${groupId}/messages/${messageId}`, {
+      await axios.delete(`https://cobraxnet.onrender.com/api/v1/groups/${groupId}/messages/${messageId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -585,7 +585,7 @@ const GroupChat = () => {
   const getImageUrl = (url) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return `http://localhost:3000${url}`;
+    return `https://cobraxnet.onrender.com${url}`;
   };
 
   // Obtener el userId actual del token
@@ -1163,7 +1163,7 @@ const GroupChat = () => {
                       
                       const token = localStorage.getItem('token');
                       const response = await axios.post(
-                        `http://localhost:3000/api/v1/groups/${groupId}/messages/${reactionMessage._id}/reaction`,
+                        `https://cobraxnet.onrender.com/api/v1/groups/${groupId}/messages/${reactionMessage._id}/reaction`,
                         { reaction: emoji.native },
                         { headers: { Authorization: `Bearer ${token}` } }
                       );
@@ -1400,7 +1400,7 @@ const GroupChat = () => {
           getImageUrl={(avatar) => {
             if (!avatar) return '/default-avatar.png';
             if (avatar.startsWith('http')) return avatar;
-            return `http://localhost:3000${avatar}`;
+            return `https://cobraxnet.onrender.com${avatar}`;
           }}
           messageId={showReactionsModal}
           onRemoveReaction={handleRemoveReaction}

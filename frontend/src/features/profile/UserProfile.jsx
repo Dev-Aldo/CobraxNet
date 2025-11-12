@@ -42,7 +42,7 @@ const UserProfile = () => {
 
         
         // Corregir la URL para obtener el perfil del usuario actual
-        const res = await axios.get('http://localhost:3000/api/v1/profile/me', {
+        const res = await axios.get('https://cobraxnet.onrender.com/api/v1/profile/me', {
           headers: { 
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -75,7 +75,7 @@ const UserProfile = () => {
       try {
         setPostsLoading(true);
         const token = localStorage.getItem('token');
-        const response = await axios.get(`http://localhost:3000/api/v1/posts/user/${userId}`, {
+        const response = await axios.get(`https://cobraxnet.onrender.com/api/v1/posts/user/${userId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setPosts(response.data.posts);
@@ -112,7 +112,7 @@ const UserProfile = () => {
         
         console.log('Solicitando perfil para el usuario ID:', userId);
         // Cargar perfil del usuario
-        const res = await axios.get(`http://localhost:3000/api/v1/profile/${userId}`, {
+        const res = await axios.get(`https://cobraxnet.onrender.com/api/v1/profile/${userId}`, {
           headers: { 
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -160,20 +160,20 @@ const UserProfile = () => {
   const getImageUrl = (url) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return `http://localhost:3000${url}`;
+    return `https://cobraxnet.onrender.com${url}`;
   };
 
   // Funciones para reacciones y comentarios (idénticas a Profile.jsx, adaptadas)
   const handleReact = async (postId, emoji) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`http://localhost:3000/api/v1/posts/${postId}/reaction`, 
+      await axios.post(`https://cobraxnet.onrender.com/api/v1/posts/${postId}/reaction`, 
         { emoji },
         { headers: { Authorization: `Bearer ${token}` }}
       );
       // Actualizar los posts después de reaccionar
       if (userId) {
-        const response = await axios.get(`http://localhost:3000/api/v1/posts/user/${userId}`, {
+        const response = await axios.get(`https://cobraxnet.onrender.com/api/v1/posts/user/${userId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setPosts(response.data.posts);
@@ -186,12 +186,12 @@ const UserProfile = () => {
   const handleRemoveReaction = async (postId, emoji) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:3000/api/v1/posts/${postId}/reaction`, {
+      await axios.delete(`https://cobraxnet.onrender.com/api/v1/posts/${postId}/reaction`, {
         headers: { Authorization: `Bearer ${token}` },
         data: { emoji }
       });
       if (userId) {
-        const response = await axios.get(`http://localhost:3000/api/v1/posts/user/${userId}`, {
+        const response = await axios.get(`https://cobraxnet.onrender.com/api/v1/posts/user/${userId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setPosts(response.data.posts);
@@ -205,11 +205,11 @@ const UserProfile = () => {
       const formData = new FormData();
       formData.append('content', content);
       if (commentImages[postId]) formData.append('image', commentImages[postId]);
-      await axios.post(`http://localhost:3000/api/v1/posts/${postId}/comment`, formData, {
+      await axios.post(`https://cobraxnet.onrender.com/api/v1/posts/${postId}/comment`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (userId) {
-        const response = await axios.get(`http://localhost:3000/api/v1/posts/user/${userId}`, {
+        const response = await axios.get(`https://cobraxnet.onrender.com/api/v1/posts/user/${userId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setPosts(response.data.posts);
@@ -772,14 +772,14 @@ const UserProfile = () => {
                                               onClick={async () => {
                                                 const token = localStorage.getItem('token');
                                                 await axios.put(
-                                                  `http://localhost:3000/api/v1/posts/${post._id}/comment/${comment._id}`,
+                                                  `https://cobraxnet.onrender.com/api/v1/posts/${post._id}/comment/${comment._id}`,
                                                   { content: editCommentContent },
                                                   { headers: { Authorization: `Bearer ${token}` }}
                                                 );
                                                 setEditingCommentId(null);
                                                 setEditCommentContent('');
                                                 // Refrescar posts
-                                                const response = await axios.get(`http://localhost:3000/api/v1/posts/user/${userId}`, {
+                                                const response = await axios.get(`https://cobraxnet.onrender.com/api/v1/posts/user/${userId}`, {
                                                   headers: { Authorization: `Bearer ${token}` }
                                                 });
                                                 setPosts(response.data.posts);
@@ -830,11 +830,11 @@ const UserProfile = () => {
                                                   if (!window.confirm('¿Seguro que quieres eliminar este comentario?')) return;
                                                   const token = localStorage.getItem('token');
                                                   await axios.delete(
-                                                    `http://localhost:3000/api/v1/posts/${post._id}/comment/${comment._id}`,
+                                                    `https://cobraxnet.onrender.com/api/v1/posts/${post._id}/comment/${comment._id}`,
                                                     { headers: { Authorization: `Bearer ${token}` } }
                                                   );
                                                   // Refrescar posts
-                                                  const response = await axios.get(`http://localhost:3000/api/v1/posts/user/${userId}`, {
+                                                  const response = await axios.get(`https://cobraxnet.onrender.com/api/v1/posts/user/${userId}`, {
                                                     headers: { Authorization: `Bearer ${token}` }
                                                   });
                                                   setPosts(response.data.posts);

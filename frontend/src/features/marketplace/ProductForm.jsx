@@ -42,7 +42,7 @@ const ProductForm = () => {
       // Modo edición: cargar datos del producto
       const fetchProduct = async () => {
         try {
-          const res = await axios.get(`http://localhost:3000/api/v1/marketplace/${id}`);
+          const res = await axios.get(`https://cobraxnet.onrender.com/api/v1/marketplace/${id}`);
           setForm({
             title: res.data.title,
             description: res.data.description,
@@ -180,12 +180,12 @@ const ProductForm = () => {
     try {
       if (id) {
         // Editar producto
-        await axios.put(`http://localhost:3000/api/v1/marketplace/${id}`, formData, {
+        await axios.put(`https://cobraxnet.onrender.com/api/v1/marketplace/${id}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` }
         });
       } else {
         // Crear producto
-        await axios.post('http://localhost:3000/api/v1/marketplace', formData, {
+        await axios.post('https://cobraxnet.onrender.com/api/v1/marketplace', formData, {
           headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` }
         });
       }
@@ -351,7 +351,7 @@ const ProductForm = () => {
                 {form.images && form.images.length > 0 && Array.from(form.images).map((img, idx) => (
                   <div key={idx} className="relative group">
                     <img
-                      src={typeof img === 'string' ? (img.startsWith('http') ? img : `http://localhost:3000${img}`) : URL.createObjectURL(img)}
+                      src={typeof img === 'string' ? (img.startsWith('http') ? img : `https://cobraxnet.onrender.com${img}`) : URL.createObjectURL(img)}
                       alt="preview"
                       className="w-20 h-20 object-cover rounded-lg border border-white/20 shadow group-hover:opacity-80"
                     />

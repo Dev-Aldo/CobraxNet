@@ -10,8 +10,8 @@ import ReactionsModal from '../posts/ReactionsModal';
 import { useToxicityCheck } from '../../shared/hooks/useToxicityCheck';
 import { useNSFWCheck } from '../../shared/hooks/useNSFWCheck';
 
-const API_URL = 'http://localhost:3000/api/v1/profile';
-const POSTS_API_URL = 'http://localhost:3000/api/v1/posts';
+const API_URL = 'https://cobraxnet.onrender.com/api/v1/profile';
+const POSTS_API_URL = 'https://cobraxnet.onrender.com/api/v1/posts';
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -567,7 +567,7 @@ const Profile = () => {
     try {
       const token = localStorage.getItem('token');
       const res = await axios.put(
-        'http://localhost:3000/api/v1/profile/avatar',
+        'https://cobraxnet.onrender.com/api/v1/profile/avatar',
         formData,
         {
           headers: {
@@ -592,7 +592,7 @@ const Profile = () => {
       const formData = new FormData();
       formData.append('cover', coverFile);
       const token = localStorage.getItem('token');
-      const res = await axios.put('http://localhost:3000/api/v1/profile/cover', formData, {
+      const res = await axios.put('https://cobraxnet.onrender.com/api/v1/profile/cover', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
@@ -609,7 +609,7 @@ const Profile = () => {
     if (!window.confirm('¿Seguro que deseas eliminar tu foto de perfil?')) return;
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.delete('http://localhost:3000/api/v1/profile/avatar', {
+      const res = await axios.delete('https://cobraxnet.onrender.com/api/v1/profile/avatar', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setProfile(prev => ({ ...prev, avatar: res.data.avatar }));
@@ -623,7 +623,7 @@ const Profile = () => {
     if (!window.confirm('¿Seguro que deseas eliminar tu portada?')) return;
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.delete('http://localhost:3000/api/v1/profile/cover', {
+      const res = await axios.delete('https://cobraxnet.onrender.com/api/v1/profile/cover', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setProfile(prev => ({ ...prev, cover: res.data.cover }));
@@ -668,7 +668,7 @@ const Profile = () => {
         }
       };
       const res = await axios.put(
-        'http://localhost:3000/api/v1/profile/me',
+        'https://cobraxnet.onrender.com/api/v1/profile/me',
         payload,
         {
           headers: { Authorization: `Bearer ${token}` }
@@ -707,7 +707,7 @@ const Profile = () => {
   const getImageUrl = (url) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return `http://localhost:3000${url}`;
+    return `https://cobraxnet.onrender.com${url}`;
   };
   
   // Función para editar un post

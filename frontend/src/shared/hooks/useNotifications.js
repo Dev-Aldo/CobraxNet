@@ -12,7 +12,7 @@ const useNotifications = () => {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const response = await axios.get('http://localhost:3000/api/v1/notifications/unread-count', {
+      const response = await axios.get('https://cobraxnet.onrender.com/api/v1/notifications/unread-count', {
         headers: { Authorization: `Bearer ${token}` }
       });
       

@@ -19,7 +19,7 @@ const Notifications = ({ isOpen, onClose }) => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:3000/api/v1/notifications', {
+      const response = await axios.get('https://cobraxnet.onrender.com/api/v1/notifications', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setNotifications(response.data.notifications);
@@ -36,7 +36,7 @@ const Notifications = ({ isOpen, onClose }) => {
   const markAsRead = async (notificationId) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.patch(`http://localhost:3000/api/v1/notifications/${notificationId}/read`, {}, {
+      await axios.patch(`https://cobraxnet.onrender.com/api/v1/notifications/${notificationId}/read`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -61,7 +61,7 @@ const Notifications = ({ isOpen, onClose }) => {
   const markAllAsRead = async () => {
     try {
       const token = localStorage.getItem('token');
-      await axios.patch('http://localhost:3000/api/v1/notifications/mark-all-read', {}, {
+      await axios.patch('https://cobraxnet.onrender.com/api/v1/notifications/mark-all-read', {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -79,7 +79,7 @@ const Notifications = ({ isOpen, onClose }) => {
   const deleteNotification = async (notificationId) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:3000/api/v1/notifications/${notificationId}`, {
+      await axios.delete(`https://cobraxnet.onrender.com/api/v1/notifications/${notificationId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -132,7 +132,7 @@ const Notifications = ({ isOpen, onClose }) => {
   const getImageUrl = (url) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return `http://localhost:3000${url}`;
+    return `https://cobraxnet.onrender.com${url}`;
   };
 
   // Obtener icono según tipo de notificación

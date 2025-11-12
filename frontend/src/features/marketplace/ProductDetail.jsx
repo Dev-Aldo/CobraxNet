@@ -27,7 +27,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/api/v1/marketplace/${id}`);
+        const res = await axios.get(`https://cobraxnet.onrender.com/api/v1/marketplace/${id}`);
         setProduct(res.data);
       } catch (err) {
         setError('Producto no encontrado');
@@ -40,7 +40,7 @@ const ProductDetail = () => {
   const handleDelete = async () => {
     if (!window.confirm('¿Seguro que quieres eliminar este producto?')) return;
     try {
-      await axios.delete(`http://localhost:3000/api/v1/marketplace/${id}`, {
+      await axios.delete(`https://cobraxnet.onrender.com/api/v1/marketplace/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       navigate('/marketplace');
@@ -97,7 +97,7 @@ const ProductDetail = () => {
             <div className="relative w-full flex flex-col items-center mb-2">
               <div className="w-full flex justify-center items-center bg-black/80 rounded-2xl border-2 sm:border-4 border-white/10 shadow-lg h-64 sm:h-80 md:h-96 mb-2 cursor-pointer hover:scale-105 transition-transform duration-300" style={{ maxHeight: 420 }} onClick={() => { setShowImageModal(true); setModalImageIdx(0); }}>
                 <img
-                  src={typeof images[modalImageIdx] === 'string' ? (images[modalImageIdx].startsWith('http') ? images[modalImageIdx] : `http://localhost:3000${images[modalImageIdx]}`) : '/logo.png'}
+                  src={typeof images[modalImageIdx] === 'string' ? (images[modalImageIdx].startsWith('http') ? images[modalImageIdx] : `https://cobraxnet.onrender.com${images[modalImageIdx]}`) : '/logo.png'}
                   alt={product.title}
                   className="max-h-full max-w-full object-contain rounded-2xl"
                   style={{ background: 'transparent' }}
@@ -110,7 +110,7 @@ const ProductDetail = () => {
                   {images.map((img, idx) => (
                     <img
                       key={idx}
-                      src={typeof img === 'string' ? (img.startsWith('http') ? img : `http://localhost:3000${img}`) : '/logo.png'}
+                      src={typeof img === 'string' ? (img.startsWith('http') ? img : `https://cobraxnet.onrender.com${img}`) : '/logo.png'}
                       alt={`miniatura-${idx}`}
                       className={`w-12 h-12 sm:w-14 sm:h-14 object-cover rounded-lg border-2 ${modalImageIdx === idx ? 'border-blue-500' : 'border-white/20'} cursor-pointer transition-transform hover:scale-105`}
                       onClick={() => setModalImageIdx(idx)}
@@ -133,7 +133,7 @@ const ProductDetail = () => {
                   </button>
                 )}
                 <img
-                  src={typeof images[modalImageIdx] === 'string' ? (images[modalImageIdx].startsWith('http') ? images[modalImageIdx] : `http://localhost:3000${images[modalImageIdx]}`) : '/logo.png'}
+                  src={typeof images[modalImageIdx] === 'string' ? (images[modalImageIdx].startsWith('http') ? images[modalImageIdx] : `https://cobraxnet.onrender.com${images[modalImageIdx]}`) : '/logo.png'}
                   alt={product.title}
                   className="max-h-[90vh] max-w-[90vw] rounded-2xl border-4 border-white/20 shadow-2xl"
                   onClick={e => e.stopPropagation()}
@@ -189,7 +189,7 @@ const ProductDetail = () => {
                     >
                       {product.seller.avatar && product.seller.avatar !== '/uploads/default-avatar.png' ? (
                         <img
-                          src={product.seller.avatar.startsWith('http') ? product.seller.avatar : `http://localhost:3000${product.seller.avatar}`}
+                          src={product.seller.avatar.startsWith('http') ? product.seller.avatar : `https://cobraxnet.onrender.com${product.seller.avatar}`}
                           alt="Avatar"
                           className="w-8 h-8 rounded-full object-cover border-2 border-white group-hover:ring-2 group-hover:ring-indigo-400 transition"
                           onError={e => { e.target.style.display = 'none'; }}

@@ -33,7 +33,7 @@ const Groups = () => {
   const fetchGroups = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:3000/api/v1/groups', {
+      const response = await axios.get('https://cobraxnet.onrender.com/api/v1/groups', {
         headers: { Authorization: `Bearer ${token}` },
         params: { search }
       });
@@ -49,7 +49,7 @@ const Groups = () => {
   const fetchMyGroups = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:3000/api/v1/groups/user/me', {
+      const response = await axios.get('https://cobraxnet.onrender.com/api/v1/groups/user/me', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setMyGroups(response.data.data);
@@ -75,7 +75,7 @@ const Groups = () => {
           setUsersModalData(prev => ({ ...prev, loading: false }));
           return;
         }
-        const res = await axios.get('http://localhost:3000/api/v1/profile/all', {
+        const res = await axios.get('https://cobraxnet.onrender.com/api/v1/profile/all', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setUsersModalData({ profiles: res.data, loading: false, error: '' });
@@ -110,7 +110,7 @@ const Groups = () => {
         formData.append('avatar', newGroup.avatar);
       }
 
-      await axios.post('http://localhost:3000/api/v1/groups', formData, {
+      await axios.post('https://cobraxnet.onrender.com/api/v1/groups', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
@@ -130,7 +130,7 @@ const Groups = () => {
   // Unirse a un grupo
   const handleJoinGroup = async (groupId) => {
     try {
-      await axios.post(`http://localhost:3000/api/v1/groups/${groupId}/join`, {}, {
+      await axios.post(`https://cobraxnet.onrender.com/api/v1/groups/${groupId}/join`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchGroups();
@@ -143,7 +143,7 @@ const Groups = () => {
   // Abandonar un grupo
   const handleLeaveGroup = async (groupId) => {
     try {
-      await axios.delete(`http://localhost:3000/api/v1/groups/${groupId}/leave`, {
+      await axios.delete(`https://cobraxnet.onrender.com/api/v1/groups/${groupId}/leave`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchGroups();
@@ -170,7 +170,7 @@ const Groups = () => {
   const getImageUrl = (url) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return `http://localhost:3000${url}`;
+    return `https://cobraxnet.onrender.com${url}`;
   };
 
   return (
@@ -565,7 +565,7 @@ const Groups = () => {
                       return (profileData.username || '').toLowerCase().includes(q) || (profileData.carrera || '').toLowerCase().includes(q);
                     })
                     .map((profileData) => {
-                    const getImageUrl = (url) => url?.startsWith('http') ? url : `http://localhost:3000${url}`;
+                    const getImageUrl = (url) => url?.startsWith('http') ? url : `https://cobraxnet.onrender.com${url}`;
                     const token = localStorage.getItem('token');
                     let profileLink = `/profile/${profileData.user}`;
                     try {

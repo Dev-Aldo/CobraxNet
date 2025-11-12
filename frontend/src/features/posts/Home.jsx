@@ -20,7 +20,7 @@ import { useNSFWCheck } from '../../shared/hooks/useNSFWCheck';
     window.location.reload();
   };
 
-const API_URL = 'http://localhost:3000/api/v1/posts';
+const API_URL = 'https://cobraxnet.onrender.com/api/v1/posts';
 
 const Home = () => {
   // Carrusel: índice de imagen por post
@@ -104,7 +104,7 @@ const Home = () => {
       try {
         const token = localStorage.getItem('token');
         if (!token) return;
-        const res = await axios.get('http://localhost:3000/api/v1/profile/me', {
+        const res = await axios.get('https://cobraxnet.onrender.com/api/v1/profile/me', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setProfile(res.data);
@@ -255,7 +255,7 @@ const Home = () => {
   const getImageUrl = (url) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return `http://localhost:3000${url}`;
+    return `https://cobraxnet.onrender.com${url}`;
   };
 
   // Cargar perfiles para el modal de usuarios en móvil
@@ -268,7 +268,7 @@ const Home = () => {
           setUsersModalData(prev => ({ ...prev, loading: false }));
           return;
         }
-        const res = await axios.get('http://localhost:3000/api/v1/profile/all', {
+        const res = await axios.get('https://cobraxnet.onrender.com/api/v1/profile/all', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setUsersModalData({ profiles: res.data, loading: false, error: '' });

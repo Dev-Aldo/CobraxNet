@@ -100,12 +100,12 @@ const GroupDetail = () => {
     );
     try {
       if (yaReacciono) {
-        await axios.delete(`http://localhost:3000/api/v1/groups/${groupId}/posts/${postId}/reaction`, {
+        await axios.delete(`https://cobraxnet.onrender.com/api/v1/groups/${groupId}/posts/${postId}/reaction`, {
           headers: { Authorization: `Bearer ${token}` },
           data: { emoji }
         });
       } else {
-        await axios.post(`http://localhost:3000/api/v1/groups/${groupId}/posts/${postId}/reaction`, { emoji }, {
+        await axios.post(`https://cobraxnet.onrender.com/api/v1/groups/${groupId}/posts/${postId}/reaction`, { emoji }, {
           headers: { Authorization: `Bearer ${token}` }
         });
       }
@@ -126,7 +126,7 @@ const GroupDetail = () => {
       editMediaFiles.forEach(file => formData.append('media', file));
       // Adjuntar los archivos existentes que no se eliminaron
       formData.append('existingMedia', JSON.stringify(editExistingMedia));
-      await axios.put(`http://localhost:3000/api/v1/groups/${groupId}/posts/${postId}`, formData, {
+      await axios.put(`https://cobraxnet.onrender.com/api/v1/groups/${groupId}/posts/${postId}`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setEditingPostId(null);
@@ -152,7 +152,7 @@ const GroupDetail = () => {
     if (!window.confirm(confirmMessage)) return;
     
     try {
-      await axios.delete(`http://localhost:3000/api/v1/groups/${groupId}/posts/${postId}`, {
+      await axios.delete(`https://cobraxnet.onrender.com/api/v1/groups/${groupId}/posts/${postId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchGroupPosts();
@@ -164,7 +164,7 @@ const GroupDetail = () => {
   // Editar comentario
   const handleEditComment = async (postId, commentId) => {
     try {
-      await axios.put(`http://localhost:3000/api/v1/groups/${groupId}/posts/${postId}/comment/${commentId}`,
+      await axios.put(`https://cobraxnet.onrender.com/api/v1/groups/${groupId}/posts/${postId}/comment/${commentId}`,
         { content: editCommentContent },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -190,7 +190,7 @@ const GroupDetail = () => {
     if (!window.confirm(confirmMessage)) return;
     
     try {
-      await axios.delete(`http://localhost:3000/api/v1/groups/${groupId}/posts/${postId}/comment/${commentId}`, {
+      await axios.delete(`https://cobraxnet.onrender.com/api/v1/groups/${groupId}/posts/${postId}/comment/${commentId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchGroupPosts();
@@ -225,7 +225,7 @@ const GroupDetail = () => {
       const formData = new FormData();
       formData.append('content', content);
       if (image) formData.append('image', image);
-      await axios.post(`http://localhost:3000/api/v1/groups/${groupId}/posts/${postId}/comment`, formData, {
+      await axios.post(`https://cobraxnet.onrender.com/api/v1/groups/${groupId}/posts/${postId}/comment`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchGroupPosts();
@@ -265,7 +265,7 @@ const GroupDetail = () => {
   const fetchGroupDetails = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:3000/api/v1/groups/${groupId}`, {
+      const response = await axios.get(`https://cobraxnet.onrender.com/api/v1/groups/${groupId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setGroup(response.data.data);
@@ -288,7 +288,7 @@ const GroupDetail = () => {
   // Obtener publicaciones del grupo
   const fetchGroupPosts = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/v1/groups/${groupId}/posts`, {
+      const response = await axios.get(`https://cobraxnet.onrender.com/api/v1/groups/${groupId}/posts`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setPosts(response.data.data);
@@ -350,7 +350,7 @@ const GroupDetail = () => {
   // Unirse al grupo
   const handleJoinGroup = async () => {
     try {
-      await axios.post(`http://localhost:3000/api/v1/groups/${groupId}/join`, {}, {
+      await axios.post(`https://cobraxnet.onrender.com/api/v1/groups/${groupId}/join`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchGroupDetails();
@@ -362,7 +362,7 @@ const GroupDetail = () => {
   // Abandonar el grupo
   const handleLeaveGroup = async () => {
     try {
-      await axios.delete(`http://localhost:3000/api/v1/groups/${groupId}/leave`, {
+      await axios.delete(`https://cobraxnet.onrender.com/api/v1/groups/${groupId}/leave`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchGroupDetails();
@@ -374,7 +374,7 @@ const GroupDetail = () => {
   // Cambiar rol de miembro
   const handleChangeRole = async (memberId, newRole) => {
     try {
-      await axios.put(`http://localhost:3000/api/v1/groups/${groupId}/members/${memberId}/role`, 
+      await axios.put(`https://cobraxnet.onrender.com/api/v1/groups/${groupId}/members/${memberId}/role`, 
         { role: newRole },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -387,7 +387,7 @@ const GroupDetail = () => {
   // Eliminar miembro
   const handleRemoveMember = async (memberId) => {
     try {
-      await axios.delete(`http://localhost:3000/api/v1/groups/${groupId}/members/${memberId}`, {
+      await axios.delete(`https://cobraxnet.onrender.com/api/v1/groups/${groupId}/members/${memberId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchGroupDetails();
@@ -424,7 +424,7 @@ const GroupDetail = () => {
         formData.append('avatar', editForm.avatar);
       }
       
-  await axios.put(`http://localhost:3000/api/v1/groups/${groupId}`, formData, {
+  await axios.put(`https://cobraxnet.onrender.com/api/v1/groups/${groupId}`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
@@ -442,7 +442,7 @@ const GroupDetail = () => {
   const handleDeleteGroup = async () => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este grupo? Esta acción no se puede deshacer.')) {
       try {
-        await axios.delete(`http://localhost:3000/api/v1/groups/${groupId}`, {
+        await axios.delete(`https://cobraxnet.onrender.com/api/v1/groups/${groupId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         navigate('/groups');
@@ -501,7 +501,7 @@ const GroupDetail = () => {
       mediaFiles.forEach((file) => {
         formData.append('media', file);
       });
-      await axios.post(`http://localhost:3000/api/v1/groups/${groupId}/posts`, formData, {
+      await axios.post(`https://cobraxnet.onrender.com/api/v1/groups/${groupId}/posts`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
@@ -525,7 +525,7 @@ const GroupDetail = () => {
   const getImageUrl = (url) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return `http://localhost:3000${url}`;
+    return `https://cobraxnet.onrender.com${url}`;
   };
   
   // Formatear fecha

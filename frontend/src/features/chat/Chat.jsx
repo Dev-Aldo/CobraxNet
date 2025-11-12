@@ -73,7 +73,7 @@ const Chat = () => {
     const token = localStorage.getItem('token');
     if (!token || !userId) return;
 
-    const newSocket = io('http://localhost:3000', {
+    const newSocket = io('https://cobraxnet.onrender.com', {
       auth: { token },
       reconnectionAttempts: 5,
       reconnectionDelay: 1000
@@ -103,7 +103,7 @@ const Chat = () => {
       try {
         const token = localStorage.getItem('token');
         if (!token || !userId) return;
-        const response = await axios.get(`http://localhost:3000/api/v1/chat/${userId}`, {
+        const response = await axios.get(`https://cobraxnet.onrender.com/api/v1/chat/${userId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         
@@ -244,7 +244,7 @@ const Chat = () => {
   const getImageUrl = (url) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return `http://localhost:3000${url}`;
+    return `https://cobraxnet.onrender.com${url}`;
   };
 
   // Manejar la respuesta a un mensaje
@@ -308,7 +308,7 @@ const Chat = () => {
         setError('No se pudo determinar el chat para editar el mensaje');
         return;
       }
-      const response = await axios.patch(`http://localhost:3000/api/v1/chat/${chatId}/message/${editingMessage._id}`, formData, {
+      const response = await axios.patch(`https://cobraxnet.onrender.com/api/v1/chat/${chatId}/message/${editingMessage._id}`, formData, {
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
       });
       if (response.data && response.data.data) {
@@ -394,7 +394,7 @@ const Chat = () => {
         formData.append('replyTo', replyingTo._id.toString());
       }
 
-      const response = await axios.post(`http://localhost:3000/api/v1/chat/message`, formData, {
+      const response = await axios.post(`https://cobraxnet.onrender.com/api/v1/chat/message`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
@@ -899,7 +899,7 @@ const Chat = () => {
                     try {
                       const token = localStorage.getItem('token');
                       const response = await axios.post(
-                        `http://localhost:3000/api/v1/chat/message/${reactionMessage._id}/reaction`,
+                        `https://cobraxnet.onrender.com/api/v1/chat/message/${reactionMessage._id}/reaction`,
                         { reaction: emoji.native },
                         { 
                           headers: { 
@@ -1073,7 +1073,7 @@ const Chat = () => {
             try {
               const token = localStorage.getItem('token');
               const response = await axios.post(
-                `http://localhost:3000/api/v1/chat/message/${messageId}/reaction`,
+                `https://cobraxnet.onrender.com/api/v1/chat/message/${messageId}/reaction`,
                 { reaction: emoji },
                 {
                   headers: {
