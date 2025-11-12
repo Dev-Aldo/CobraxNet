@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 // import axios from 'axios';
 import { motion } from 'framer-motion';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import UsersSidebar from '../../shared/components/UsersSidebar';
 
 import Picker from '@emoji-mart/react';
@@ -20,6 +20,7 @@ const UserProfile = () => {
   const [posts, setPosts] = useState([]);
   const [postsLoading, setPostsLoading] = useState(true);
   const [postsError, setPostsError] = useState('');
+  const [showForm, setShowForm] = useState(false);
   const [showPicker, setShowPicker] = useState(null);
   const [editingPostId, setEditingPostId] = useState(null);
   const [editPostForm, setEditPostForm] = useState({ title: '', content: '', image: null });
@@ -281,7 +282,7 @@ const UserProfile = () => {
       </div>
 
       {/* Contenedor principal estilo Facebook */}
-      <div className="relative min-h-screen flex flex-col items-center justify-start pt-24 pb-24 z-10 bg-transparent ml-64">
+  <div className="relative min-h-screen flex flex-col items-center justify-start pt-24 pb-24 z-10 bg-transparent mx-4 sm:mx-6 lg:ml-64 lg:mr-72">
         <div className="w-full max-w-4xl mx-auto">
           {/* Portada */}
           <div className="relative h-96 rounded-t-2xl shadow-lg bg-transparent border-t-2 border-x-2 border-white">
@@ -948,12 +949,65 @@ const UserProfile = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut', delay: 0.4 }}
-        className="fixed bottom-0 left-0 w-full z-20 bg-black/80 backdrop-blur-md border-t border-white/10"
+        className="hidden lg:block fixed bottom-0 left-0 w-full z-20 bg-black/80 backdrop-blur-md border-t border-white/10"
       >
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-center text-white text-sm">
           © {new Date().getFullYear()} CobraxNet. Todos los derechos reservados.
         </div>
       </motion.footer>
+
+      {/* Bottom Nav para móviles (copiado de Profile.jsx para mantener la misma interfaz) */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-30">
+        <div className="relative mx-auto max-w-3xl">
+          {/* Barra */}
+          <div className="bg-black/80 backdrop-blur-md border-t border-white/10 h-16 px-4 flex items-center justify-between">
+            <motion.a whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.05 }} href="/" className="flex flex-col items-center text-white/80">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+              <span className="text-[10px] mt-0.5">Inicio</span>
+            </motion.a>
+            <motion.a whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.05 }} href="/groups" className="flex flex-col items-center text-white/80">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20v-2a4 4 0 00-3-3.87M7 20v-2a4 4 0 013-3.87m5-4a4 4 0 11-8 0 4 4 0 018 0zm6 8v-2a4 4 0 00-3-3.87M3 20v-2a4 4 0 013-3.87" />
+              </svg>
+              <span className="text-[10px] mt-0.5">Grupos</span>
+            </motion.a>
+            {/* Botón central flotante */}
+            <div className="absolute -top-6 left-1/2 -translate-x-1/2">
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                animate={{ boxShadow: ['0 0 0 0 rgba(255,255,255,0.6)', '0 0 0 12px rgba(255,255,255,0)'] }}
+                transition={{ repeat: Infinity, duration: 3.6, ease: 'easeOut' }}
+                onClick={() => setShowForm((prev) => !prev)}
+                className="w-14 h-14 rounded-full bg-white text-black font-bold text-2xl shadow-xl border border-black/10 flex items-center justify-center"
+                aria-label="Crear publicación"
+              >
+                +
+              </motion.button>
+            </div>
+            <motion.a whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.05 }} href="/notifications" className="flex flex-col items-center text-white/80">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+              <span className="text-[10px] mt-0.5">Notificaciones</span>
+            </motion.a>
+          </div>
+        </div>
+      </nav>
+
+      {/* Modal simple para crear publicación (solo UI) */}
+      {showForm && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/60">
+          <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-black/80 rounded-xl p-6 w-full max-w-md border border-white/20">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-white font-bold">Crear publicación</h3>
+              <button className="text-white/80" onClick={() => setShowForm(false)}>Cerrar</button>
+            </div>
+            <p className="text-white/70">La creación de publicaciones está disponible en tu propio perfil.</p>
+          </motion.div>
+        </div>
+      )}
 
       {/* Modal de reacciones */}
       {showReactionsModal && (
