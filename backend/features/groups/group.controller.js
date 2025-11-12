@@ -225,8 +225,7 @@ export const createGroup = async (req, res) => {
     // Procesar imagen de avatar si existe
     let avatarUrl = '';
     if (req.file) {
-      const baseUrl = process.env.API_URL || `${req.protocol}://${req.get('host')}`;
-      avatarUrl = `${baseUrl}/uploads/${req.file.filename}`;
+      avatarUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
     }
     
     // Crear el grupo
@@ -389,8 +388,7 @@ export const updateGroup = async (req, res) => {
     
     // Actualizar avatar si se proporciona
     if (req.file) {
-      const baseUrl = process.env.API_URL || `${req.protocol}://${req.get('host')}`;
-      group.avatar = `${baseUrl}/uploads/${req.file.filename}`;
+      group.avatar = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
     }
     
     await group.save();
