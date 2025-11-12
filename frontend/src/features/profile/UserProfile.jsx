@@ -281,7 +281,7 @@ const UserProfile = () => {
       </div>
 
       {/* Contenedor principal estilo Facebook */}
-      <div className="relative min-h-screen flex flex-col items-center justify-start pt-24 pb-24 z-10 bg-transparent ml-64">
+      <div className="relative min-h-screen flex flex-col items-center justify-start pt-24 pb-24 z-10 bg-transparent mx-4 sm:mx-6 lg:ml-64 lg:mr-72">
         <div className="w-full max-w-4xl mx-auto">
           {/* Portada */}
           <div className="relative h-96 rounded-t-2xl shadow-lg bg-transparent border-t-2 border-x-2 border-white">
@@ -322,18 +322,18 @@ const UserProfile = () => {
             
             {/* Indicador de perfil propio o botón de chat */}
             {userId === currentUserId ? (
-              <div className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold">
+              <div className="mt-4 px-4 sm:px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold text-sm sm:text-base">
                 Este es tu perfil
               </div>
             ) : (
               <Link
                 to={`/chat/${userId}`}
-                className="mt-4 px-6 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition flex items-center gap-2 border border-black"
+                className="mt-4 px-4 sm:px-6 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition flex items-center gap-2 border border-black text-sm sm:text-base"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
-                Chatear
+                <span className="hidden xs:inline">Chatear</span>
               </Link>
             )}
           </div>
@@ -615,11 +615,11 @@ const UserProfile = () => {
                           className="w-full px-4 py-2 rounded-lg bg-white/10 text-white border border-white/30 focus:border-white/50 focus:ring-2 focus:ring-white/20"
                         />
                       </div>
-                      <div className="flex justify-end gap-2">
+                      <div className="flex flex-col sm:flex-row justify-end gap-2">
                         <button
                           type="button"
                           // Aquí deberías implementar la función para guardar la edición
-                          className="px-4 py-2 bg-white text-black rounded-lg hover:bg-gray-200 transition shadow-md text-sm font-medium"
+                          className="px-3 sm:px-4 py-2 bg-white text-black rounded-lg hover:bg-gray-200 transition shadow-md text-xs sm:text-sm font-medium w-full sm:w-auto"
                         >
                           Guardar
                         </button>
@@ -629,7 +629,7 @@ const UserProfile = () => {
                             setEditingPostId(null);
                             setEditPostForm({ title: '', content: '', image: null });
                           }}
-                          className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition shadow-md text-sm font-medium"
+                          className="px-3 sm:px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition shadow-md text-xs sm:text-sm font-medium w-full sm:w-auto"
                         >
                           Cancelar
                         </button>
@@ -649,20 +649,20 @@ const UserProfile = () => {
                     </>
                   )}
                   {/* Botones de acción */}
-                  <div className="flex flex-wrap items-center gap-2 mt-4">
+                  <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 mt-4">
                     {/* Botón de Reacciones */}
                     <button
                       type="button"
-                      className="px-4 py-1 rounded-full bg-white text-black hover:bg-gray-200 transition text-sm flex items-center gap-2 border border-transparent hover:border-black/20"
+                      className="px-2 sm:px-4 py-1 rounded-full bg-white text-black hover:bg-gray-200 transition text-xs sm:text-sm flex items-center gap-1 sm:gap-2 border border-transparent hover:border-black/20 justify-center"
                       onClick={() => setShowReactionsModal(post._id)}
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M14.9 9A5 5 0 0 0 13 5H9.27a7 7 0 0 1 .66 12h3a8 8 0 0 0 7.61-5.96A5 5 0 0 0 14.9 9Z"/>
                         <path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/>
                       </svg>
-                      <span>Reacciones</span>
+                      <span className="hidden xs:inline">Reacciones</span>
                       {Object.keys(grouped).length > 0 && (
-                        <span className="bg-black/20 px-2 py-0.5 rounded-full text-xs">
+                        <span className="bg-black/20 px-1 sm:px-1.5 py-0.5 rounded-full text-xs">
                           {Object.values(grouped).reduce((acc, curr) => acc + curr.count, 0)}
                         </span>
                       )}
@@ -670,7 +670,7 @@ const UserProfile = () => {
                     {/* Botón para agregar reacción */}
                     <button
                       type="button"
-                      className="ml-2 px-2 py-1 rounded-full bg-white text-black hover:bg-gray-200 transition border border-transparent hover:border-black/20"
+                      className="px-2 sm:px-2 py-1 rounded-full bg-white text-black hover:bg-gray-200 transition border border-transparent hover:border-black/20 text-base sm:text-lg font-semibold"
                       onClick={() => setShowPicker(showPicker === post._id ? null : post._id)}
                       title="Agregar reacción"
                     >
@@ -678,7 +678,7 @@ const UserProfile = () => {
                     </button>
                     {/* Emoji picker */}
                     {showPicker === post._id && (
-                      <div className="absolute z-50 mt-2">
+                      <div className="fixed left-1/2 -translate-x-1/2 bottom-20 z-50 sm:absolute sm:left-auto sm:translate-x-0 sm:bottom-auto sm:mt-2">
                         <Picker
                           data={data}
                           onEmojiSelect={emoji => {
@@ -692,7 +692,7 @@ const UserProfile = () => {
                     {/* Botón comentar */}
                     <button
                       type="button"
-                      className="px-3 py-1 rounded-full bg-white text-black hover:bg-gray-200 transition text-sm border border-transparent hover:border-black/20"
+                      className="px-2 sm:px-3 py-1 rounded-full bg-white text-black hover:bg-gray-200 transition text-xs sm:text-sm border border-transparent hover:border-black/20 justify-center"
                       onClick={() =>
                         setOpenComments((prev) => ({
                           ...prev,
@@ -872,13 +872,13 @@ const UserProfile = () => {
                             e.target.comment.value = '';
                             setCommentImages((prev) => ({ ...prev, [post._id]: null }));
                           }}
-                          className="flex w-full items-center gap-2 mt-2"
+                          className="flex flex-col sm:flex-row w-full items-center gap-2 mt-2"
                         >
                           <input
                             type="text"
                             name="comment"
                             placeholder="Escribe un comentario..."
-                            className="flex-1 px-4 py-2 rounded-lg bg-white/10 text-white border border-white/30 focus:border-white/50 focus:ring-2 focus:ring-white/20"
+                            className="flex-1 px-3 sm:px-4 py-2 rounded-lg bg-white/10 text-white border border-white/30 focus:border-white/50 focus:ring-2 focus:ring-white/20 w-full sm:w-auto text-sm"
                             required={!commentImages[post._id]}
                           />
                           {commentImages[post._id] && (
@@ -886,12 +886,12 @@ const UserProfile = () => {
                               <img
                                 src={URL.createObjectURL(commentImages[post._id])}
                                 alt="Vista previa"
-                                className="h-10 w-10 object-cover rounded-lg border border-white/20 ml-2"
+                                className="h-10 w-10 object-cover rounded-lg border border-white/20"
                               />
                               <button
                                 type="button"
                                 onClick={() => setCommentImages(prev => ({ ...prev, [post._id]: null }))}
-                                className="text-red-400 hover:text-red-600 ml-1 text-xs"
+                                className="text-red-400 hover:text-red-600 text-xs whitespace-nowrap"
                                 title="Quitar imagen"
                               >
                                 Quitar
