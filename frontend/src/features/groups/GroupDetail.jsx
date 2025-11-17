@@ -38,6 +38,7 @@ const GroupDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [notificacion, setNotificacion] = useState({ show: false, mensaje: '', tipo: '' });
+  const [fullscreenImage, setFullscreenImage] = useState(null);
 
   // Hooks para verificación de contenido
   const { checkText } = useToxicityCheck();
@@ -1098,12 +1099,13 @@ const GroupDetail = () => {
                                 const idx = carouselIndexes?.[post._id] || 0;
                                 return <>
                                   {mediaItems.length > 0 && (
-                                    <div className="relative w-full flex flex-col items-center">
+                                    <div className="relative w-full flex flex-col items-center cursor-pointer">
                                       {mediaItems[idx].type === 'image' ? (
                                         <img
                                           src={getImageUrl(mediaItems[idx].url)}
                                           alt={mediaItems[idx].name}
-                                          className="w-full max-h-[500px] object-cover bg-black/30 rounded-lg"
+                                          className="w-full max-h-[500px] object-cover bg-black/30 rounded-lg hover:opacity-90 transition-opacity"
+                                          onClick={() => setFullscreenImage(getImageUrl(mediaItems[idx].url))}
                                         />
                                       ) : (
                                         <video
@@ -1815,6 +1817,31 @@ const GroupDetail = () => {
           </div>
         </div>
       </nav>
+
+      {/* Modal de imagen en pantalla completa */}
+      {fullscreenImage && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm"
+          onClick={() => setFullscreenImage(null)}
+        >
+          <div className="relative max-w-[90vw] max-h-[90vh]">
+            <button
+              className="fixed top-4 right-4 text-white hover:text-gray-300 transition-colors bg-black/50 rounded-full p-2 backdrop-blur-sm"
+              onClick={() => setFullscreenImage(null)}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <img
+              src={fullscreenImage}
+              alt="Imagen en pantalla completa"
+              className="max-w-full max-h-[90vh] object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        </div>
+      )}
     </>
   );
 };
