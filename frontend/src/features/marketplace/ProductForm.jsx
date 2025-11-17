@@ -6,7 +6,6 @@ import { motion } from 'framer-motion';
 import UsersSidebar from '../../shared/components/UsersSidebar';
 import RightSidebar from '../../shared/components/RightSidebar';
 import { useToxicityCheck } from '../../shared/hooks/useToxicityCheck';
-import { useNSFWCheck } from '../../shared/hooks/useNSFWCheck';
 
 
 const ProductForm = () => {
@@ -26,7 +25,6 @@ const ProductForm = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   const { checkText } = useToxicityCheck();
-  const { checkImage } = useNSFWCheck();
 
   // Estado para notificaciones
   const [notificacion, setNotificacion] = useState({ show: false, mensaje: '', tipo: '' });
@@ -68,31 +66,7 @@ const ProductForm = () => {
   const handleFileChange = async (e) => {
     const files = Array.from(e.target.files);
     
-    // Verificar cada imagen por contenido NSFW
-    for (const file of files) {
-      if (file.type.startsWith('image/')) {
-        try {
-          const nsfwResult = await checkImage(file);
-          if (nsfwResult.isNSFW) {
-            const categories = nsfwResult.predictions
-              .filter(p => p.probability > 0.7)
-              .map(p => {
-                const percent = Math.round(p.probability * 100);
-                return `${p.className} (${percent}%)`;
-              })
-              .join(', ');
-            mostrarNotificacion(`⚠️ Contenido no permitido detectado en la imagen "${file.name}": ${categories}`);
-            return;
-          }
-        } catch (err) {
-          console.error('Error al verificar imagen:', err);
-          mostrarNotificacion('Error al verificar el contenido de la imagen.');
-          return;
-        }
-      }
-    }
-
-    // Si todas las imágenes pasan la verificación, agregarlas al formulario
+    // Agregar imágenes directamente sin verificación NSFW
     setForm(prev => ({
       ...prev,
       images: [...(Array.isArray(prev.images) ? prev.images.filter(img => typeof img !== 'string') : []), ...files].slice(0, 5) // máx 5
@@ -147,25 +121,6 @@ const ProductForm = () => {
     formData.append('price', form.price);
     formData.append('category', form.category);
     formData.append('contact', form.contact);
-    // Verificar imágenes nuevas por contenido NSFW
-    const newImages = form.images.filter(img => typeof img !== 'string');
-    if (newImages.length > 0) {
-      try {
-        for (const image of newImages) {
-          const isNSFW = await checkImage(image);
-          if (isNSFW) {
-            mostrarNotificacion('⚠️ Una o más imágenes contienen contenido inapropiado');
-            setLoading(false);
-            return;
-          }
-        }
-      } catch (err) {
-        console.error('Error al verificar imágenes:', err);
-        mostrarNotificacion('Error al verificar las imágenes');
-        setLoading(false);
-        return;
-      }
-    }
 
     for (let i = 0; i < form.images.length; i++) {
       // Solo archivos nuevos (no strings)
