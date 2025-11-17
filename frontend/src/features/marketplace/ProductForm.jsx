@@ -181,12 +181,12 @@ const ProductForm = () => {
       if (id) {
         // Editar producto
         await axios.put(`https://cobraxnet.onrender.com/api/v1/marketplace/${id}`, formData, {
-          headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` }
         });
       } else {
         // Crear producto
         await axios.post('https://cobraxnet.onrender.com/api/v1/marketplace', formData, {
-          headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` }
         });
       }
       navigate('/marketplace');

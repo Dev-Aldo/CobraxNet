@@ -571,9 +571,8 @@ const Profile = () => {
         formData,
         {
           headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${token}`,
-          },
+            Authorization: `Bearer ${token}`
+          }
         }
       );
       // Actualiza el perfil localmente con la nueva URL del avatar
@@ -594,8 +593,7 @@ const Profile = () => {
       const token = localStorage.getItem('token');
       const res = await axios.put('https://cobraxnet.onrender.com/api/v1/profile/cover', formData, {
         headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
+          Authorization: `Bearer ${token}`
         }
       });
       setProfile(res.data); // Actualiza el perfil con la nueva imagen

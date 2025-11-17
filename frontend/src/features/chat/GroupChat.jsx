@@ -348,8 +348,7 @@ const GroupChat = () => {
         formData,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data'
+            Authorization: `Bearer ${token}`
           }
         }
       );
@@ -471,8 +470,7 @@ const GroupChat = () => {
         formData,
         {
           headers: { 
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data'
+            Authorization: `Bearer ${token}`
           }
         }
       );
