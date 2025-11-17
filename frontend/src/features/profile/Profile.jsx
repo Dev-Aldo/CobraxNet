@@ -150,8 +150,8 @@ const Profile = () => {
     const formData = new FormData();
     formData.append('avatar', file);
 
-    const response = await axios.post(
-      `${API_URL}/me/avatar`,
+    const response = await axios.put(
+      `${API_URL}/avatar`,
       formData,
       {
         headers: {
@@ -192,8 +192,8 @@ const Profile = () => {
     const formData = new FormData();
     formData.append('cover', file);
 
-    const response = await axios.post(
-      `${API_URL}/me/cover`,
+    const response = await axios.put(
+      `${API_URL}/cover`,
       formData,
       {
         headers: {
@@ -208,7 +208,7 @@ const Profile = () => {
   // Eliminar avatar
   const deleteAvatar = async () => {
     const token = localStorage.getItem('token');
-    const response = await axios.delete(`${API_URL}/me/avatar`, {
+    const response = await axios.delete(`${API_URL}/avatar`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     return response.data;
@@ -217,7 +217,7 @@ const Profile = () => {
   // Eliminar foto de portada
   const deleteCover = async () => {
     const token = localStorage.getItem('token');
-    const response = await axios.delete(`${API_URL}/me/cover`, {
+    const response = await axios.delete(`${API_URL}/cover`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     return response.data;
