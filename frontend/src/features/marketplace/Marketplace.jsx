@@ -134,15 +134,22 @@ const Marketplace = () => {
               {products.filter(product =>
                 product.title.toLowerCase().includes(search.toLowerCase()) ||
                 product.description.toLowerCase().includes(search.toLowerCase())
-              ).map(product => (
+              ).map(product => {
+                const getImageUrl = (url) => {
+                  if (!url) return '/logo.png';
+                  if (url.startsWith('http')) return url;
+                  return `https://cobraxnet.onrender.com${url}`;
+                };
+                return (
                 <Link to={`/marketplace/${product._id}`} key={product._id} className="bg-black/70 border border-white/10 rounded-2xl shadow-xl hover:shadow-2xl transition-all p-3 sm:p-4 flex flex-col group overflow-hidden">
-                  <img src={product.images?.[0] || '/logo.png'} alt={product.title} className="h-48 sm:h-60 w-full object-cover rounded-xl mb-2 group-hover:scale-105 transition-transform duration-300" />
+                  <img src={getImageUrl(product.images?.[0])} alt={product.title} className="h-48 sm:h-60 w-full object-cover rounded-xl mb-2 group-hover:scale-105 transition-transform duration-300" />
                   <h2 className="text-base sm:text-lg font-bold text-white mb-1 truncate">{product.title}</h2>
                   <p className="text-gray-300 mb-2 line-clamp-2 text-sm sm:text-base">{product.description}</p>
                   <span className="text-blue-400 font-bold text-lg sm:text-xl mb-2">${product.price}</span>
                   <span className="text-xs text-gray-400">Publicado por: {product.seller?.username || 'Usuario'}</span>
                 </Link>
-              ))}
+              );
+              })}
             </div>
           )}
         </div>

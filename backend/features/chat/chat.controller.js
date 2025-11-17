@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import Chat from './chat.model.js';
 import User from '../auth/auth.model.js';
+import { uploadToCloudinary } from '../../shared/utils/cloudinaryService.js';
 
 // Agregar una reacción a un mensaje
 export const addReaction = async (req, res) => {
@@ -183,20 +184,25 @@ export const sendPrivateMessage = async (req, res) => {
     const { content = '', to } = req.body;
     let mediaFiles = [];
     if (req.files) {
-      mediaFiles = req.files.map(file => {
-        const url = `/uploads/${file.filename}`;
+      for (const file of req.files) {
+        const fileName = `chat_${req.user.userId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        let resourceType = 'auto';
         let type = 'file';
         if (file.mimetype.startsWith('image/')) {
           type = 'image';
+          resourceType = 'image';
         } else if (file.mimetype.startsWith('video/')) {
           type = 'video';
+          resourceType = 'video';
         }
-        return {
+        
+        const result = await uploadToCloudinary(file.buffer, 'chat', fileName, resourceType);
+        mediaFiles.push({
           type,
-          url,
+          url: result.secure_url,
           name: file.originalname
-        };
-      });
+        });
+      }
     }
 
     const otherUserId = to;
@@ -371,12 +377,25 @@ export const editPrivateMessage = async (req, res) => {
 
     let mediaFiles = [];
     if (req.files) {
-      mediaFiles = req.files.map(file => ({
-        type: file.mimetype.startsWith('image/') ? 'image' : 
-              file.mimetype.startsWith('video/') ? 'video' : 'file',
-        url: `/uploads/${file.filename}`,
-        name: file.originalname
-      }));
+      for (const file of req.files) {
+        const fileName = `chat_${req.user.userId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        let resourceType = 'auto';
+        let type = 'file';
+        if (file.mimetype.startsWith('image/')) {
+          type = 'image';
+          resourceType = 'image';
+        } else if (file.mimetype.startsWith('video/')) {
+          type = 'video';
+          resourceType = 'video';
+        }
+        
+        const result = await uploadToCloudinary(file.buffer, 'chat', fileName, resourceType);
+        mediaFiles.push({
+          type,
+          url: result.secure_url,
+          name: file.originalname
+        });
+      }
     }
 
     const { content = '', existingMedia = '[]' } = req.body;

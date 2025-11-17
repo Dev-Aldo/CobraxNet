@@ -82,12 +82,26 @@ export const editGroupPost = async (req, res) => {
     // Procesar archivos nuevos
     let newMedia = [];
     if (req.files && req.files.length > 0) {
-      newMedia = req.files.map(file => ({
-        url: `/uploads/${file.filename}`,
-        type: file.mimetype.startsWith('image') ? 'image' : file.mimetype.startsWith('video') ? 'video' : 'file',
-        name: file.originalname,
-        mimetype: file.mimetype
-      }));
+      for (const file of req.files) {
+        const fileName = `group_post_${req.user.userId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        let resourceType = 'auto';
+        let type = 'file';
+        if (file.mimetype.startsWith('image/')) {
+          type = 'image';
+          resourceType = 'image';
+        } else if (file.mimetype.startsWith('video/')) {
+          type = 'video';
+          resourceType = 'video';
+        }
+        const result = await uploadToCloudinary(file.buffer, 'group-posts', fileName, resourceType);
+        newMedia.push({
+          url: result.secure_url,
+          type: type,
+          name: file.originalname,
+          mimetype: file.mimetype,
+          publicId: result.public_id
+        });
+      }
     }
     // Procesar media existente (que no se eliminó)
     let parsedExisting = [];
@@ -124,7 +138,15 @@ export const addGroupPostComment = async (req, res) => {
     // Procesar archivo si existe
     let fileUrl = '';
     if (req.file) {
-      fileUrl = `/uploads/${req.file.filename}`;
+      const fileName = `group_comment_${req.user.userId}_${Date.now()}`;
+      let resourceType = 'auto';
+      if (req.file.mimetype.startsWith('image/')) {
+        resourceType = 'image';
+      } else if (req.file.mimetype.startsWith('video/')) {
+        resourceType = 'video';
+      }
+      const result = await uploadToCloudinary(req.file.buffer, 'group-posts/comments', fileName, resourceType);
+      fileUrl = result.secure_url;
     }
     // Agregar comentario
     post.comments.push({ user: req.user.userId, content, fileUrl, createdAt: new Date() });
@@ -211,6 +233,7 @@ export const deleteGroupPostComment = async (req, res) => {
 };
 import Group from './group.model.js';
 import Post from '../posts/post.model.js';
+import { uploadToCloudinary } from '../../shared/utils/cloudinaryService.js';
 
 // Crear un nuevo grupo
 export const createGroup = async (req, res) => {
@@ -225,7 +248,9 @@ export const createGroup = async (req, res) => {
     // Procesar imagen de avatar si existe
     let avatarUrl = '';
     if (req.file) {
-      avatarUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+      const fileName = `group_avatar_${req.user.userId}_${Date.now()}`;
+      const result = await uploadToCloudinary(req.file.buffer, 'groups', fileName, 'image');
+      avatarUrl = result.secure_url;
     }
     
     // Crear el grupo
@@ -388,7 +413,9 @@ export const updateGroup = async (req, res) => {
     
     // Actualizar avatar si se proporciona
     if (req.file) {
-      group.avatar = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+      const fileName = `group_avatar_${req.user.userId}_${Date.now()}`;
+      const result = await uploadToCloudinary(req.file.buffer, 'groups', fileName, 'image');
+      group.avatar = result.secure_url;
     }
     
     await group.save();
@@ -666,15 +693,29 @@ export const createGroupPost = async (req, res) => {
     if (!isMember) {
       return res.status(403).json({ success: false, message: 'No eres miembro de este grupo' });
     }
-    // Procesar archivos
+    // Procesar archivos multimedia
     let media = [];
     if (req.files && req.files.length > 0) {
-      media = req.files.map(file => ({
-        url: `/uploads/${file.filename}`,
-        type: file.mimetype.startsWith('image') ? 'image' : file.mimetype.startsWith('video') ? 'video' : 'file',
-        name: file.originalname,
-        mimetype: file.mimetype
-      }));
+      for (const file of req.files) {
+        const fileName = `group_post_${req.user.userId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        let resourceType = 'auto';
+        let type = 'file';
+        if (file.mimetype.startsWith('image/')) {
+          type = 'image';
+          resourceType = 'image';
+        } else if (file.mimetype.startsWith('video/')) {
+          type = 'video';
+          resourceType = 'video';
+        }
+        const result = await uploadToCloudinary(file.buffer, 'group-posts', fileName, resourceType);
+        media.push({
+          url: result.secure_url,
+          type: type,
+          name: file.originalname,
+          mimetype: file.mimetype,
+          publicId: result.public_id
+        });
+      }
     }
     // Crear el post
     const post = new Post({
