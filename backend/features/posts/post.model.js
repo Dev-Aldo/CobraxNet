@@ -30,12 +30,14 @@ const postSchema = new mongoose.Schema({
     {
       user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
       content: String,
-      fileUrl: String,
+      imageUrl: String,
+      publicId: String, // Para eliminación de Cloudinary
       createdAt: Date
     }
   ],
   media: [{
     url: { type: String },
+    publicId: { type: String }, // Para eliminación de Cloudinary
     type: { type: String }, // image, video, file
     name: { type: String },
     mimetype: { type: String }
