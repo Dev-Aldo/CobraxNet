@@ -86,25 +86,30 @@ export const editGroupPost = async (req, res) => {
     // Procesar archivos nuevos
     let newMedia = [];
     if (req.files && req.files.length > 0) {
-      for (const file of req.files) {
-        const fileName = `group_post_${req.user.userId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        let resourceType = 'auto';
-        let type = 'file';
-        if (file.mimetype.startsWith('image/')) {
-          type = 'image';
-          resourceType = 'image';
-        } else if (file.mimetype.startsWith('video/')) {
-          type = 'video';
-          resourceType = 'video';
+      try {
+        for (const file of req.files) {
+          const fileName = `group_post_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+          let resourceType = 'auto';
+          let type = 'file';
+          if (file.mimetype.startsWith('image/')) {
+            type = 'image';
+            resourceType = 'image';
+          } else if (file.mimetype.startsWith('video/')) {
+            type = 'video';
+            resourceType = 'video';
+          }
+          const result = await uploadToCloudinary(file.buffer, 'group-posts', fileName, resourceType);
+          newMedia.push({
+            url: result.secure_url,
+            type: type,
+            name: file.originalname,
+            mimetype: file.mimetype,
+            publicId: result.public_id
+          });
         }
-        const result = await uploadToCloudinary(file.buffer, 'group-posts', fileName, resourceType);
-        newMedia.push({
-          url: result.secure_url,
-          type: type,
-          name: file.originalname,
-          mimetype: file.mimetype,
-          publicId: result.public_id
-        });
+      } catch (err) {
+        console.error('Error al subir archivos a Cloudinary:', err);
+        return res.status(400).json({ success: false, message: 'Error al procesar los archivos multimedia' });
       }
     }
     // Procesar media existente (que no se eliminó)
@@ -142,15 +147,20 @@ export const addGroupPostComment = async (req, res) => {
     // Procesar archivo si existe
     let fileUrl = '';
     if (req.file) {
-      const fileName = `group_comment_${req.user.userId}_${Date.now()}`;
-      let resourceType = 'auto';
-      if (req.file.mimetype.startsWith('image/')) {
-        resourceType = 'image';
-      } else if (req.file.mimetype.startsWith('video/')) {
-        resourceType = 'video';
+      try {
+        const fileName = `group_comment_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        let resourceType = 'auto';
+        if (req.file.mimetype.startsWith('image/')) {
+          resourceType = 'image';
+        } else if (req.file.mimetype.startsWith('video/')) {
+          resourceType = 'video';
+        }
+        const result = await uploadToCloudinary(req.file.buffer, 'group-posts/comments', fileName, resourceType);
+        fileUrl = result.secure_url;
+      } catch (err) {
+        console.error('Error al subir archivo a Cloudinary:', err);
+        return res.status(400).json({ success: false, message: 'Error al procesar el archivo' });
       }
-      const result = await uploadToCloudinary(req.file.buffer, 'group-posts/comments', fileName, resourceType);
-      fileUrl = result.secure_url;
     }
     // Agregar comentario
     post.comments.push({ user: req.user.userId, content, fileUrl, createdAt: new Date() });
@@ -249,9 +259,14 @@ export const createGroup = async (req, res) => {
     // Procesar imagen de avatar si existe
     let avatarUrl = '';
     if (req.file) {
-      const fileName = `group_avatar_${req.user.userId}_${Date.now()}`;
-      const result = await uploadToCloudinary(req.file.buffer, 'groups', fileName, 'image');
-      avatarUrl = result.secure_url;
+      try {
+        const fileName = `group_avatar_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const result = await uploadToCloudinary(req.file.buffer, 'groups', fileName, 'image');
+        avatarUrl = result.secure_url;
+      } catch (err) {
+        console.error('Error al subir avatar a Cloudinary:', err);
+        return res.status(400).json({ message: 'Error al procesar la imagen del grupo' });
+      }
     }
     
     // Crear el grupo
@@ -414,9 +429,14 @@ export const updateGroup = async (req, res) => {
     
     // Actualizar avatar si se proporciona
     if (req.file) {
-      const fileName = `group_avatar_${req.user.userId}_${Date.now()}`;
-      const result = await uploadToCloudinary(req.file.buffer, 'groups', fileName, 'image');
-      group.avatar = result.secure_url;
+      try {
+        const fileName = `group_avatar_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const result = await uploadToCloudinary(req.file.buffer, 'groups', fileName, 'image');
+        group.avatar = result.secure_url;
+      } catch (err) {
+        console.error('Error al subir avatar a Cloudinary:', err);
+        return res.status(400).json({ success: false, message: 'Error al procesar la imagen del grupo' });
+      }
     }
     
     await group.save();
@@ -697,25 +717,30 @@ export const createGroupPost = async (req, res) => {
     // Procesar archivos multimedia
     let media = [];
     if (req.files && req.files.length > 0) {
-      for (const file of req.files) {
-        const fileName = `group_post_${req.user.userId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        let resourceType = 'auto';
-        let type = 'file';
-        if (file.mimetype.startsWith('image/')) {
-          type = 'image';
-          resourceType = 'image';
-        } else if (file.mimetype.startsWith('video/')) {
-          type = 'video';
-          resourceType = 'video';
+      try {
+        for (const file of req.files) {
+          const fileName = `group_post_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+          let resourceType = 'auto';
+          let type = 'file';
+          if (file.mimetype.startsWith('image/')) {
+            type = 'image';
+            resourceType = 'image';
+          } else if (file.mimetype.startsWith('video/')) {
+            type = 'video';
+            resourceType = 'video';
+          }
+          const result = await uploadToCloudinary(file.buffer, 'group-posts', fileName, resourceType);
+          media.push({
+            url: result.secure_url,
+            type: type,
+            name: file.originalname,
+            mimetype: file.mimetype,
+            publicId: result.public_id
+          });
         }
-        const result = await uploadToCloudinary(file.buffer, 'group-posts', fileName, resourceType);
-        media.push({
-          url: result.secure_url,
-          type: type,
-          name: file.originalname,
-          mimetype: file.mimetype,
-          publicId: result.public_id
-        });
+      } catch (err) {
+        console.error('Error al subir archivos a Cloudinary:', err);
+        return res.status(400).json({ success: false, message: 'Error al procesar los archivos multimedia' });
       }
     }
     // Crear el post
