@@ -1,5 +1,6 @@
 import Post from './post.model.js';
 import mongoose from 'mongoose';
+import { uploadToCloudinary, deleteFromCloudinary, extractPublicIdFromUrl } from '../../shared/utils/cloudinaryService.js';
 
 // Crear post
 export const createPost = async (req, res) => {
@@ -8,15 +9,34 @@ export const createPost = async (req, res) => {
     if (!content) {
       return res.status(400).json({ message: 'El contenido es obligatorio' });
     }
+    
     let media = [];
     if (req.files && req.files.length > 0) {
-      media = req.files.map(f => ({
-        url: `${req.protocol}://${req.get('host')}/uploads/${f.filename}`,
-        type: f.mimetype.startsWith('image/') ? 'image' : f.mimetype.startsWith('video/') ? 'video' : 'file',
-        name: f.originalname,
-        mimetype: f.mimetype
-      }));
+      // Subir cada archivo a Cloudinary
+      for (const file of req.files) {
+        const fileName = `post_${req.user.userId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        let resourceType = 'auto';
+        let fileType = 'file';
+        
+        if (file.mimetype.startsWith('image/')) {
+          fileType = 'image';
+          resourceType = 'image';
+        } else if (file.mimetype.startsWith('video/')) {
+          fileType = 'video';
+          resourceType = 'video';
+        }
+        
+        const result = await uploadToCloudinary(file.buffer, 'posts', fileName, resourceType);
+        media.push({
+          url: result.secure_url,
+          publicId: result.public_id,
+          type: fileType,
+          name: file.originalname,
+          mimetype: file.mimetype
+        });
+      }
     }
+    
     const post = new Post({
       title,
       content,
@@ -116,14 +136,33 @@ export const updatePost = async (req, res) => {
   try {
     const { title = '', content } = req.body;
     let media = [];
+    
     if (req.files && req.files.length > 0) {
-      media = req.files.map(f => ({
-        url: `${req.protocol}://${req.get('host')}/uploads/${f.filename}`,
-        type: f.mimetype.startsWith('image/') ? 'image' : f.mimetype.startsWith('video/') ? 'video' : 'file',
-        name: f.originalname,
-        mimetype: f.mimetype
-      }));
+      // Subir cada archivo nuevo a Cloudinary
+      for (const file of req.files) {
+        const fileName = `post_${req.user.userId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        let resourceType = 'auto';
+        let fileType = 'file';
+        
+        if (file.mimetype.startsWith('image/')) {
+          fileType = 'image';
+          resourceType = 'image';
+        } else if (file.mimetype.startsWith('video/')) {
+          fileType = 'video';
+          resourceType = 'video';
+        }
+        
+        const result = await uploadToCloudinary(file.buffer, 'posts', fileName, resourceType);
+        media.push({
+          url: result.secure_url,
+          publicId: result.public_id,
+          type: fileType,
+          name: file.originalname,
+          mimetype: file.mimetype
+        });
+      }
     }
+    
     // Archivos existentes (urls y metadatos)
     let existingMedia = req.body.existingMedia;
     if (existingMedia) {
@@ -137,6 +176,7 @@ export const updatePost = async (req, res) => {
     } else {
       existingMedia = [];
     }
+    
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: 'Post no encontrado' });
 
@@ -146,13 +186,28 @@ export const updatePost = async (req, res) => {
 
     if (title !== undefined) post.title = title;
     if (content) post.content = content;
+    
+    // Eliminar archivos que ya no están en existingMedia
+    if (post.media && post.media.length > 0) {
+      for (const oldMedia of post.media) {
+        const isStillPresent = existingMedia.some(em => em.url === oldMedia.url || em.publicId === oldMedia.publicId);
+        if (!isStillPresent && oldMedia.publicId) {
+          try {
+            await deleteFromCloudinary(oldMedia.publicId, oldMedia.type === 'video' ? 'video' : 'image');
+          } catch (err) {
+            console.error('Error al eliminar archivo de Cloudinary:', err);
+          }
+        }
+      }
+    }
+    
     // Combinar media existente + nueva
     post.media = [...existingMedia, ...media];
 
     await post.save();
     res.status(200).json(post);
   } catch (error) {
-    res.status(500).json({ message: 'Error al editar el post', error });
+    res.status(500).json({ message: 'Error al editar el post', error: error.message });
   }
 };
 
@@ -183,8 +238,12 @@ export const addComment = async (req, res) => {
     }
 
     let imageUrl = '';
+    let publicId = '';
     if (req.file) {
-      imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+      const fileName = `comment_${req.user.userId}_${Date.now()}`;
+      const result = await uploadToCloudinary(req.file.buffer, 'posts/comments', fileName, 'image');
+      imageUrl = result.secure_url;
+      publicId = result.public_id;
     }
 
     const post = await Post.findById(req.params.id);
@@ -194,6 +253,7 @@ export const addComment = async (req, res) => {
       user: req.user.userId,
       content,
       imageUrl,
+      publicId,
       createdAt: new Date()
     });
 
@@ -253,6 +313,15 @@ export const deleteComment = async (req, res) => {
 
     if (comment.user.toString() !== req.user.userId) {
       return res.status(403).json({ message: 'No autorizado para eliminar este comentario' });
+    }
+
+    // Eliminar imagen de Cloudinary si existe
+    if (comment.publicId) {
+      try {
+        await deleteFromCloudinary(comment.publicId, 'image');
+      } catch (err) {
+        console.error('Error al eliminar imagen de comentario de Cloudinary:', err);
+      }
     }
 
     comment.deleteOne();
