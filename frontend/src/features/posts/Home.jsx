@@ -1192,29 +1192,6 @@ const Home = () => {
                                   return;
                                 }
 
-                                // Verificar imagen si existe
-                                if (image && image.type.startsWith('image/')) {
-                                  try {
-                                    const nsfwResult = await checkImage(image);
-                                    if (nsfwResult.isNSFW) {
-                                      const categories = nsfwResult.predictions
-                                        .filter(p => p.probability > 0.7)
-                                        .map(p => {
-                                          const percent = Math.round(p.probability * 100);
-                                          return `${p.className} (${percent}%)`;
-                                        })
-                                        .join(', ');
-                                      mostrarNotificacion(`⚠️ Contenido no permitido detectado en la imagen: ${categories}`);
-                                      setCommentImages(prev => ({ ...prev, [post._id]: null }));
-                                      return;
-                                    }
-                                  } catch (err) {
-                                    console.error('Error al verificar imagen:', err);
-                                    mostrarNotificacion('Error al verificar el contenido de la imagen.');
-                                    return;
-                                  }
-                                }
-
                                 const formData = new FormData();
                                 formData.append('content', content);
                                 if (image) formData.append('image', image);

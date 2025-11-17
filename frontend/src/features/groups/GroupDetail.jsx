@@ -10,7 +10,6 @@ import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
 import ReactionsModal from '../posts/ReactionsModal';
 import { useToxicityCheck } from '../../shared/hooks/useToxicityCheck';
-import { useNSFWCheck } from '../../shared/hooks/useNSFWCheck';
 
 const GroupDetail = () => {
   // Estado para la barra de búsqueda
@@ -43,7 +42,6 @@ const GroupDetail = () => {
 
   // Hooks para verificación de contenido
   const { checkText } = useToxicityCheck();
-  const { checkImage } = useNSFWCheck();
   
   // Estados para la creación de publicaciones
   const [newPost, setNewPost] = useState({ title: '', content: '', file: null });
@@ -215,18 +213,9 @@ const GroupDetail = () => {
         return;
       }
 
-      // Verificar imagen si existe
-      if (image) {
-        const result = await checkImage(image);
-        if (result.isNSFW) {
-          mostrarNotificacion('La imagen parece ser inapropiada', 'error');
-          return;
-        }
-      }
-
       const formData = new FormData();
       formData.append('content', content);
-      if (image) formData.append('image', image);
+      if (image) formData.append('file', image);
       await axios.post(`https://cobraxnet.onrender.com/api/v1/groups/${groupId}/posts/${postId}/comment`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -483,17 +472,6 @@ const GroupDetail = () => {
       if (result.isToxic) {
         mostrarNotificacion('El contenido del texto parece ser inapropiado', 'error');
         return;
-      }
-
-      // Verificar imágenes si hay
-      if (mediaFiles.length > 0) {
-        for (const file of mediaFiles) {
-          const result = await checkImage(file);
-          if (result.isNSFW) {
-            mostrarNotificacion('Una o más imágenes parecen ser inapropiadas', 'error');
-            return;
-          }
-        }
       }
 
       setPostingInProgress(true);
