@@ -1,15 +1,7 @@
 import multer from 'multer';
-import path from 'path';
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    cb(null, Date.now() + ext);
-  }
-});
+// Usar almacenamiento en memoria en lugar de disco (necesario para Cloudinary)
+const storage = multer.memoryStorage();
 
 // Limitar tamaño de archivos a 10MB
 const limits = {
