@@ -1,3 +1,7 @@
+import Group from './group.model.js';
+import Post from '../posts/post.model.js';
+import { uploadToCloudinary } from '../../shared/utils/cloudinaryService.js';
+
 // Expulsar miembro de un grupo
 export const removeMember = async (req, res) => {
   try {
@@ -231,9 +235,6 @@ export const deleteGroupPostComment = async (req, res) => {
     res.status(500).json({ success: false, message: 'Error al eliminar comentario', error: error.message });
   }
 };
-import Group from './group.model.js';
-import Post from '../posts/post.model.js';
-import { uploadToCloudinary } from '../../shared/utils/cloudinaryService.js';
 
 // Crear un nuevo grupo
 export const createGroup = async (req, res) => {
