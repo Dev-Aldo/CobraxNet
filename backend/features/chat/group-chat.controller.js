@@ -1,6 +1,7 @@
 import GroupChat from './group-chat.model.js';
 import Group from '../groups/group.model.js';
 import { StatusCodes } from 'http-status-codes';
+import { uploadToCloudinary, deleteFromCloudinary, extractPublicIdFromUrl } from '../../shared/utils/cloudinaryService.js';
 
 // Obtener mensajes de un grupo
 export const getGroupMessages = async (req, res) => {
@@ -65,16 +66,19 @@ export const sendGroupMessage = async (req, res) => {
     // Procesar archivos multimedia
     let media = [];
     if (req.files && req.files.length > 0) {
-      media = req.files.map(file => {
+      for (const file of req.files) {
         const fileType = file.mimetype.startsWith('image/') ? 'image' :
-                        file.mimetype.startsWith('video/') ? 'video' : 'file';
-        return {
+                        file.mimetype.startsWith('video/') ? 'video' : 'raw';
+        const fileName = `message_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const result = await uploadToCloudinary(file.buffer, 'messages', fileName, fileType);
+        media.push({
           type: fileType,
-          url: `/uploads/${file.filename}`,
+          url: result.secure_url,
           name: file.originalname,
-          mimeType: file.mimetype
-        };
-      });
+          mimeType: file.mimetype,
+          publicId: result.public_id
+        });
+      }
     }
 
     if ((!content || content.trim() === '') && media.length === 0) {
@@ -235,13 +239,19 @@ export const editGroupMessage = async (req, res) => {
     // Procesar los archivos multimedia nuevos
     let newMedia = [];
     if (req.files && req.files.length > 0) {
-      newMedia = req.files.map(file => ({
-        type: file.mimetype.startsWith('image/') ? 'image' :
-              file.mimetype.startsWith('video/') ? 'video' : 'file',
-        url: `/uploads/${file.filename}`,
-        name: file.originalname,
-        mimeType: file.mimetype
-      }));
+      for (const file of req.files) {
+        const fileType = file.mimetype.startsWith('image/') ? 'image' :
+              file.mimetype.startsWith('video/') ? 'video' : 'raw';
+        const fileName = `message_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const result = await uploadToCloudinary(file.buffer, 'messages', fileName, fileType);
+        newMedia.push({
+          type: fileType,
+          url: result.secure_url,
+          name: file.originalname,
+          mimeType: file.mimetype,
+          publicId: result.public_id
+        });
+      }
     }
 
     // Manejar archivos multimedia existentes
@@ -259,13 +269,14 @@ export const editGroupMessage = async (req, res) => {
       !existingMedia.some(existingFile => existingFile.url === oldFile.url)
     );
 
-    // Eliminar archivos físicamente
+    // Eliminar archivos de Cloudinary
     for (const file of removedMedia) {
-      if (file.url) {
+      if (file.publicId) {
         try {
-          await deleteImageFile(file.url);
+          const resourceType = file.type === 'image' ? 'image' : file.type === 'video' ? 'video' : 'raw';
+          await deleteFromCloudinary(file.publicId, resourceType);
         } catch (error) {
-          console.error('Error al eliminar archivo:', error);
+          console.error('Error al eliminar archivo de Cloudinary:', error);
         }
       }
     }

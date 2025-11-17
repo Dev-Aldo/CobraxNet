@@ -1,14 +1,21 @@
 import Product from './marketplace.model.js';
 import { deleteImageFile } from '../../shared/utils/deleteImageFile.js';
+import { uploadToCloudinary } from '../../shared/utils/cloudinaryService.js';
 
 // Crear producto
 export const createProduct = async (req, res) => {
 	try {
 		const { title, description, price, category, contact } = req.body;
 		let images = [];
+		
 		if (req.files && req.files.length > 0) {
-			images = req.files.map(file => `${req.protocol}://${req.get('host')}/uploads/${file.filename}`);
+			for (const file of req.files) {
+				const fileName = `product_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+				const result = await uploadToCloudinary(file.buffer, 'products', fileName, 'image');
+				images.push(result.secure_url);
+			}
 		}
+		
 		const product = new Product({
 			title,
 			description,
@@ -76,15 +83,20 @@ export const updateProduct = async (req, res) => {
 			} catch {}
 		}
 		if (Array.isArray(imagesToDelete) && imagesToDelete.length > 0) {
-			// Eliminar del array y del servidor
+			// Eliminar del array y de Cloudinary
 			product.images = product.images.filter(img => !imagesToDelete.includes(img));
-			imagesToDelete.forEach(imgUrl => deleteImageFile(imgUrl));
+			for (const imgUrl of imagesToDelete) {
+				await deleteImageFile(imgUrl, 'image');
+			}
 		}
 
 		// Agregar nuevas imágenes
 		if (req.files && req.files.length > 0) {
-			const newImgs = req.files.map(file => `${req.protocol}://${req.get('host')}/uploads/${file.filename}`);
-			product.images = [...product.images, ...newImgs];
+			for (const file of req.files) {
+				const fileName = `product_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+				const result = await uploadToCloudinary(file.buffer, 'products', fileName, 'image');
+				product.images.push(result.secure_url);
+			}
 		}
 
 		await product.save();

@@ -1,7 +1,6 @@
 import Profile from './profile.model.js';
 import User from '../auth/auth.model.js';
-import fs from 'fs';
-import path from 'path';
+import { uploadToCloudinary, deleteFromCloudinary, extractPublicIdFromUrl } from '../../shared/utils/cloudinaryService.js';
 
 // Obtener todos los perfiles de usuarios
 export const getAllProfiles = async (req, res) => {
@@ -88,7 +87,18 @@ export const updateAvatar = async (req, res) => {
     if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
 
     if (req.file) {
-      user.avatar = `/uploads/${req.file.filename}`;
+      // Eliminar avatar anterior si existe
+      if (user.avatar) {
+        const publicId = extractPublicIdFromUrl(user.avatar);
+        if (publicId) {
+          await deleteFromCloudinary(publicId, 'image');
+        }
+      }
+
+      // Subir nuevo avatar a Cloudinary
+      const fileName = `avatar_${req.user.userId}_${Date.now()}`;
+      const result = await uploadToCloudinary(req.file.buffer, 'profiles', fileName, 'image');
+      user.avatar = result.secure_url;
       await user.save();
       return res.json({ avatar: user.avatar });
     }
@@ -100,10 +110,27 @@ export const updateAvatar = async (req, res) => {
 
 export const updateCover = async (req, res) => {
   try {
-    const url = req.file ? `/uploads/${req.file.filename}` : '';
+    let coverUrl = '';
+    
+    if (req.file) {
+      // Subir cover a Cloudinary
+      const fileName = `cover_${req.user.userId}_${Date.now()}`;
+      const result = await uploadToCloudinary(req.file.buffer, 'profiles', fileName, 'image');
+      coverUrl = result.secure_url;
+
+      // Eliminar cover anterior si existe
+      const profile = await Profile.findOne({ user: req.user.userId });
+      if (profile && profile.cover) {
+        const publicId = extractPublicIdFromUrl(profile.cover);
+        if (publicId) {
+          await deleteFromCloudinary(publicId, 'image');
+        }
+      }
+    }
+
     const profile = await Profile.findOneAndUpdate(
       { user: req.user.userId },
-      { cover: url },
+      { cover: coverUrl },
       { new: true }
     );
     res.json(profile);
@@ -112,37 +139,26 @@ export const updateCover = async (req, res) => {
   }
 };
 
-const DEFAULT_AVATAR = '/uploads/default-avatar.png';
-const DEFAULT_COVER = '/uploads/default-cover.jpg';
-
-function deleteFileIfExists(filePath) {
-  // Evita borrar el archivo por defecto
-  if (
-    filePath &&
-    !filePath.endsWith('default-avatar.png') &&
-    !filePath.endsWith('default-cover.jpg')
-  ) {
-    const absolutePath = path.join(process.cwd(), 'backend', filePath);
-    fs.unlink(absolutePath, err => {
-      // No lanzar error si no existe
-    });
-  }
-}
 
 export const deleteAvatar = async (req, res) => {
   try {
     const user = await User.findById(req.user.userId);
     if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
 
-    // Elimina el archivo anterior si no es el predeterminado
-    deleteFileIfExists(user.avatar);
+    // Elimina el avatar de Cloudinary si existe
+    if (user.avatar) {
+      const publicId = extractPublicIdFromUrl(user.avatar);
+      if (publicId) {
+        await deleteFromCloudinary(publicId, 'image');
+      }
+    }
 
-    user.avatar = DEFAULT_AVATAR;
+    user.avatar = null;
     await user.save();
 
-    res.json({ message: 'Avatar restablecido', avatar: user.avatar });
+    res.json({ message: 'Avatar eliminado', avatar: user.avatar });
   } catch (err) {
-    res.status(500).json({ message: 'Error al restablecer avatar' });
+    res.status(500).json({ message: 'Error al eliminar avatar' });
   }
 };
 
@@ -151,14 +167,19 @@ export const deleteCover = async (req, res) => {
     const profile = await Profile.findOne({ user: req.user.userId });
     if (!profile) return res.status(404).json({ message: 'Perfil no encontrado' });
 
-    // Elimina el archivo anterior si no es el predeterminado
-    deleteFileIfExists(profile.cover);
+    // Elimina el cover de Cloudinary si existe
+    if (profile.cover) {
+      const publicId = extractPublicIdFromUrl(profile.cover);
+      if (publicId) {
+        await deleteFromCloudinary(publicId, 'image');
+      }
+    }
 
-    profile.cover = DEFAULT_COVER;
+    profile.cover = '';
     await profile.save();
 
-    res.json({ message: 'Portada restablecida', cover: profile.cover });
+    res.json({ message: 'Portada eliminada', cover: profile.cover });
   } catch (err) {
-    res.status(500).json({ message: 'Error al restablecer portada' });
+    res.status(500).json({ message: 'Error al eliminar portada' });
   }
 };
