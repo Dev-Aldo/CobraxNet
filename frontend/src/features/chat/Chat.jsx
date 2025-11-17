@@ -311,7 +311,7 @@ const Chat = () => {
         return;
       }
       const response = await axios.patch(`https://cobraxnet.onrender.com/api/v1/chat/${chatId}/message/${editingMessage._id}`, formData, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
       });
       if (response.data && response.data.data) {
         const updated = response.data.data;
@@ -398,7 +398,8 @@ const Chat = () => {
 
       const response = await axios.post(`https://cobraxnet.onrender.com/api/v1/chat/message`, formData, {
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
         },
       });
 
