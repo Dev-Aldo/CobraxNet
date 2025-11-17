@@ -42,9 +42,10 @@ export const useNSFWCheck = () => {
       URL.revokeObjectURL(imageUrl);
 
       // Filtrar predicciones relevantes (NSFW)
+      // Aumentamos el umbral a 0.8 (80%) para reducir falsos positivos
       const nsfwPredictions = predictions.filter(p => 
-        ['Porn', 'Hentai', 'Sexy'].includes(p.className) && 
-        p.probability > 0.5
+        ['Porn', 'Hentai'].includes(p.className) && 
+        p.probability > 0.8
       );
 
       return {
