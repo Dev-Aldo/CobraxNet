@@ -1083,8 +1083,11 @@ const GroupDetail = () => {
                                         <img
                                           src={getImageUrl(mediaItems[idx].url)}
                                           alt={mediaItems[idx].name}
-                                          className="w-full max-h-[500px] object-cover bg-black/30 rounded-lg hover:opacity-90 transition-opacity"
-                                          onClick={() => setFullscreenImage(getImageUrl(mediaItems[idx].url))}
+                                          className="w-full max-h-[500px] object-cover bg-black/30 rounded-lg hover:opacity-90 transition-opacity cursor-pointer"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            setFullscreenImage(getImageUrl(mediaItems[idx].url));
+                                          }}
                                         />
                                       ) : (
                                         <video
